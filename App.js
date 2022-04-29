@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Text , TouchableOpacity} from "react-native";
+import { Text , TouchableOpacity,Button} from "react-native";
 import {VStack, HStack, Flex} from "react-native-flex-layout"
-
+import checkWinner from "./checkWinner";
 
 function Box ({ value, onPress,disabled, highlighted }){
   return (
@@ -28,9 +28,24 @@ function App(){
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
     setBoard(newBoard);
-    setCurrentPlayer((prev) => (prev === "X" ? "0" : "X" ));
-
+    
+    const winnerLine = checkWinner(newBoard);
+    
+    if(winnerLine){
+      setHighlighted(winnerLine);
+      setWinner(currentPlayer);
+      alert(' ${currentPlayer} won!');
+    } else {
+      setCurrentPlayer((prev) => (prev === "X" ? "O" : "X" ));
+    }
   };
+
+  const handleReset = () => {
+    setCurrentPlayer("X");
+    setBoard(Array(9).fill(null));
+    setHighlighted([]);
+    setWinner(null);
+  }
 
   const getBox = (index) => (
     <Box 
@@ -46,15 +61,21 @@ function App(){
     <VStack fill center spacing={2}>
       <Text style={{ fontSize:36}}>{currentPlayer} to Play </Text>
       <HStack spacing={2} shouldWrapChildren>
-       
+        {getBox(0)}
+        {getBox(1)}
+        {getBox(2)}      
       </HStack>   
       <HStack spacing={2} shouldWrapChildren>
-      
+        {getBox(3)}
+        {getBox(4)}
+        {getBox(5)}
       </HStack>   
       <HStack spacing={2} shouldWrapChildren>
-      
+        {getBox(6)}
+        {getBox(7)}
+        {getBox(8)}
       </HStack>
-
+      <Button title="Reset" onPress={handleReset} />
     </VStack>
   )
 }
